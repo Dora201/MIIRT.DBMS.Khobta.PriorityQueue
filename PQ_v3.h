@@ -8,11 +8,11 @@ using namespace std;
 template <typename T>
 struct Element
 {
-    T     element;
+    T&    element;
     int     priority;
     Element *next;
 
-    Element(int el, int pr);
+    Element(T el, int pr);
     friend ostream& operator <<(ostream& out, const Element& elem)
     {
         return out << elem.element;
@@ -24,26 +24,28 @@ class PriorityQueue
 {
     Element* head;
     Element* tail;
-    T i;
     bool Sort();
 public:
     PriorityQueue();
     ~PriorityQueue();
     T& Dequeue();
-    void Enqueue(T element, int priority);
-    friend ostream& operator << (ostream& out, const PriorityQueue& link)
-    {
-        auto current = link.head;
-        out << "{ ";
-        while (current->next)
-        {
-            out << *current << ",  ";
-            current = current->next;
-        }
-        return out << *current << " }";
-    }
+    void Enqueue(const T& element, const int priority);
+    friend ostream& operator << (ostream& out, const PriorityQueue& link);
 };
 
+
+template<typename T>
+friend ostream& operator << (ostream& out, const PriorityQueue& link)
+{
+    auto current = link.head;
+    out << "{ ";
+    while (current->next)
+    {
+        out << *current << ",  ";
+        current = current->next;
+    }
+    return out << *current << " }";
+}
 
 
 template<typename T>
@@ -105,7 +107,7 @@ inline T& PriorityQueue<T>::Dequeue()
 }
 
 template<typename T>
-inline void PriorityQueue<T>::Enqueue(T element, int priority)
+inline void PriorityQueue<T>::Enqueue(const T& element, const int priority)
 {
     Element* elem = new Element(element, priority);
 
@@ -115,12 +117,11 @@ inline void PriorityQueue<T>::Enqueue(T element, int priority)
         tail = elem;
     }
     else head = tail = elem;
-    while (!Sort())
-        Sort();
+    while (!Sort());
 }
 
 template<typename T>
-inline Element<T>::Element(int el, int pr)
+inline Element<T>::Element(const T& el, int pr)
 {
     element = el;
     priority = pr;
